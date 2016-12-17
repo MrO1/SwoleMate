@@ -32,56 +32,67 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Chest"
-                android:id="@+id/chestButton"/>
+                android:id="@+id/chestButton"
+                android:textOff="Chest"
+                android:textOn="Chest"/>
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Back"
+                android:textOff="Back"
+                android:textOn="Back"
                 android:id="@+id/backButton"/>
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Shoulders"
+                android:textOff="Shoulders"
+                android:textOn="Shoulders"
                 android:id="@+id/shouldersButton"/>
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Biceps"
+                android:textOff="Biceps"
+                android:textOn="Biceps"
                 android:id="@+id/bicepsButton"/>
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Triceps"
+                android:textOff="Triceps"
+                android:textOn="Triceps"
                 android:id="@+id/tricepsButton"/>
 
-            <Button
+            <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Legs"
+                android:textOff="Legs"
+                android:textOn="Legs"
                 android:id="@+id/legsButton"/>
         </LinearLayout>
     </HorizontalScrollView>
 
-    <Button
+    <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         android:layout_below="@+id/muscleGroupsScrollView"
         android:text="Power And Strength"
+        android:textOff="Power And Strength"
+        android:textOn="Power And Strength"
         android:id="@+id/powerStrengthButton"/>
 
-    <Button
+    <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/muscleGroupsScrollView"
         android:text="Hypertrophy And Endurance"
+        android:textOff="Hypertrophy And Endurance"
+        android:textOn="Hypertrophy And Endurance"
         android:id="@+id/hyperEnduranceButton"
         android:layout_toRightOf="@+id/powerStrengthButton"/>
 
