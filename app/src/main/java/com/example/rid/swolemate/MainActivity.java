@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,12 +29,19 @@ public class MainActivity extends AppCompatActivity {
     private ToggleButton powerStrength;
     private ToggleButton enduranceHyp;
 
+    private ArrayList<String> selectedMuscles;
+
+
     private ArrayList<ToggleButton> muscleButtons;
+
+    private String workoutType = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        selectedMuscles = new ArrayList<String>();
 
         chestButton = (ToggleButton)findViewById(R.id.chestButton);
         backButton = (ToggleButton)findViewById(R.id.backButton);
@@ -60,8 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
                 if(chestButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("chest");
+
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("chest");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -76,8 +89,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(backButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("back");
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("back");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -91,8 +106,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(shoulderButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("shoulder");
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("shoulder");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -106,8 +123,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(bicepButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("bicep");
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("bicep");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -121,8 +140,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(tricepButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("tricep");
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("tricep");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -136,8 +157,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(legButton.isChecked() == true){
                     selectedMuscleGroups += 1;
+                    selectedMuscles.add("leg");
                 }else{
                     selectedMuscleGroups -= 1;
+                    selectedMuscles.remove("leg");
                 }
                 System.out.println(selectedMuscleGroups);
 
@@ -151,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(enduranceHyp.isChecked()){
                     enduranceHyp.setChecked(false);
+                    workoutType = "power";
                 }
             }
         });
@@ -160,11 +184,28 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(powerStrength.isChecked()){
                     powerStrength.setChecked(false);
+                    workoutType = "hypertrophy";
                 }
             }
         });
 
         Button submitButton = (Button)findViewById(R.id.getWorkoutButton);
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(selectedMuscles.size() == 1){
+                    WorkoutTypeClass workout = new WorkoutTypeClass(selectedMuscles.get(0), workoutType);
+                    System.out.println(workout.getWorkoutType());
+                }else if (selectedMuscles.size() == 2){
+                    WorkoutTypeClass workout = new WorkoutTypeClass(selectedMuscles.get(0), selectedMuscles.get(1), workoutType);
+                    System.out.println(workout.getWorkoutType());
+                }else{
+
+                }
+
+            }
+        });
 
     }
 
