@@ -1,5 +1,6 @@
 package com.example.rid.swolemate;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<ToggleButton> muscleButtons;
 
     private String workoutType = "";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,6 +178,8 @@ public class MainActivity extends AppCompatActivity {
                 if(enduranceHyp.isChecked()){
                     enduranceHyp.setChecked(false);
                     workoutType = "power";
+                }else{
+                    workoutType = "power";
                 }
             }
         });
@@ -184,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(powerStrength.isChecked()){
                     powerStrength.setChecked(false);
+                    workoutType = "hypertrophy";
+                }else{
                     workoutType = "hypertrophy";
                 }
             }
@@ -197,8 +204,18 @@ public class MainActivity extends AppCompatActivity {
                 if(selectedMuscles.size() == 1){
                     WorkoutTypeClass workout = new WorkoutTypeClass(selectedMuscles.get(0), workoutType);
                     System.out.println(workout.getWorkoutType());
+                    Intent i = new Intent(MainActivity.this, WorkoutActivity.class);
+                    i.putExtra("Workout1", selectedMuscles.get(0));
+                    i.putExtra("WorkoutType", workoutType);
+
+                    startActivity(i);
                 }else if (selectedMuscles.size() == 2){
                     WorkoutTypeClass workout = new WorkoutTypeClass(selectedMuscles.get(0), selectedMuscles.get(1), workoutType);
+                    Intent i = new Intent(MainActivity.this, WorkoutActivity.class);
+                    i.putExtra("Workout1", selectedMuscles.get(0));
+                    i.putExtra("Workout2", selectedMuscles.get(1));
+                    i.putExtra("WorkoutType", workoutType);
+                    startActivity(i);
                     System.out.println(workout.getWorkoutType());
                 }else{
 
