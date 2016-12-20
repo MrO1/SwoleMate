@@ -4,6 +4,8 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -13,12 +15,16 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WorkoutActivity extends AppCompatActivity {
 
 
     private WorkoutTypeClass workout;
+
+    private ListView lv1;
+    private ListView lv2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,8 +35,16 @@ public class WorkoutActivity extends AppCompatActivity {
 
 
 
+
+
         if(getIntent().getExtras().size() == 2){
+            lv1 = (ListView)findViewById(R.id.lv1);
             workout = new WorkoutTypeClass((String)extras.get("Workout1"),(String)extras.get("WorkoutType"));
+            System.out.println(workout.getWorkoutType());
+        }else if (getIntent().getExtras().size() == 3){
+            lv1 = (ListView)findViewById(R.id.lv1);
+            lv2 = (ListView)findViewById(R.id.lv2);
+            workout = new WorkoutTypeClass((String)extras.get("Workout1"), (String)extras.get("Workout2"),(String)extras.get("WorkoutType"));
             System.out.println(workout.getWorkoutType());
         }
 
@@ -56,12 +70,12 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
-    private class CreateWorkout extends AsyncTask<WorkoutTypeClass, Void, Void> {
+    private class CreateWorkout extends AsyncTask<WorkoutTypeClass, Void, List<List<String>>> {
 
         private ProgressDialog Dialog = new ProgressDialog(WorkoutActivity.this);
 
         @Override
-        protected Void doInBackground(WorkoutTypeClass... params) {
+        protected List<List<String>> doInBackground(WorkoutTypeClass... params) {
             //Setup
             Random rand = new Random();
 
@@ -101,6 +115,11 @@ public class WorkoutActivity extends AppCompatActivity {
             ArrayList<Integer> usedInts = new ArrayList<Integer>();
 
 
+            List<String> selectedWorkouts = new ArrayList<String>();
+            List<String> selectedWorkouts2 = new ArrayList<String>();
+
+
+
             //Set up sets and reps count
             params[0].setSetsReps();
             switch(params[0].getMuscleGroup1()){
@@ -134,6 +153,7 @@ public class WorkoutActivity extends AppCompatActivity {
                                 i -= 1;
                             } else {
                                 System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
                                 usedInts.add(n);
                             }
 
@@ -176,6 +196,216 @@ public class WorkoutActivity extends AppCompatActivity {
                                 i -= 1;
                             } else {
                                 System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
+                                usedInts.add(n);
+                            }
+
+                            //System.out.println(obj.get("id"));
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("EXCEPTION!: " + e);
+                    }
+                    break;
+                case "leg":
+                    try {
+                        for (int i = 0; i < legMuscles.size(); i++) {
+                            JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + legMuscles.get(i)));
+
+                            JSONArray results = new JSONArray(parser.get("results").toString());
+                            //System.out.println(results);
+                            JSONObject currObject = new JSONObject();
+                            for (int j = 0; j < results.length(); j++) {
+
+                                currObject = (JSONObject) results.get(j);
+                                JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                if (muscleList.length() == 1) {
+                                    legExercises.add(currObject);
+                                }
+
+                            }
+
+                        }
+                        for (int i = 0; i < 4; i++) {
+                            //System.out.println(results.get(i));
+                            int n = rand.nextInt(legExercises.size() - 1);
+                            JSONObject obj = legExercises.get(n);
+                            //if()
+                            //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                            if (usedInts.contains(n)) {
+                                i -= 1;
+                            } else {
+                                System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
+                                usedInts.add(n);
+                            }
+
+                            //System.out.println(obj.get("id"));
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("EXCEPTION!: " + e);
+                    }
+                    break;
+
+                case "shoulder":
+                    try {
+                        for (int i = 0; i < shoulderMuscles.size(); i++) {
+                            JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + shoulderMuscles.get(i)));
+
+                            JSONArray results = new JSONArray(parser.get("results").toString());
+                            //System.out.println(results);
+                            JSONObject currObject = new JSONObject();
+                            for (int j = 0; j < results.length(); j++) {
+
+                                currObject = (JSONObject) results.get(j);
+                                JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                if (muscleList.length() == 1) {
+                                    shoulderExercises.add(currObject);
+                                }
+
+                            }
+
+                        }
+                        for (int i = 0; i < 4; i++) {
+                            //System.out.println(results.get(i));
+                            int n = rand.nextInt(shoulderExercises.size() - 1);
+                            JSONObject obj = shoulderExercises.get(n);
+                            //if()
+                            //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                            if (usedInts.contains(n)) {
+                                i -= 1;
+                            } else {
+                                System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
+                                usedInts.add(n);
+                            }
+
+                            //System.out.println(obj.get("id"));
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("EXCEPTION!: " + e);
+                    }
+                    break;
+
+                case "bicep":
+                    try {
+                        for (int i = 0; i < bicepMuscles.size(); i++) {
+                            JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + bicepMuscles.get(i)));
+
+                            JSONArray results = new JSONArray(parser.get("results").toString());
+                            //System.out.println(results);
+                            JSONObject currObject = new JSONObject();
+                            for (int j = 0; j < results.length(); j++) {
+
+                                currObject = (JSONObject) results.get(j);
+                                JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                if (muscleList.length() == 1) {
+                                    bicepExercises.add(currObject);
+                                }
+
+                            }
+
+                        }
+                        for (int i = 0; i < 4; i++) {
+                            //System.out.println(results.get(i));
+                            int n = rand.nextInt(bicepExercises.size() - 1);
+                            JSONObject obj = bicepExercises.get(n);
+                            //if()
+                            //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                            if (usedInts.contains(n)) {
+                                i -= 1;
+                            } else {
+                                System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
+                                usedInts.add(n);
+                            }
+
+                            //System.out.println(obj.get("id"));
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("EXCEPTION!: " + e);
+                    }
+                    break;
+
+                case "tricep":
+                    try {
+                        for (int i = 0; i < tricepMuscles.size(); i++) {
+                            JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + tricepMuscles.get(i)));
+
+                            JSONArray results = new JSONArray(parser.get("results").toString());
+                            //System.out.println(results);
+                            JSONObject currObject = new JSONObject();
+                            for (int j = 0; j < results.length(); j++) {
+
+                                currObject = (JSONObject) results.get(j);
+                                JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                if (muscleList.length() == 1) {
+                                    tricepExercises.add(currObject);
+                                }
+
+                            }
+
+                        }
+                        for (int i = 0; i < 4; i++) {
+                            //System.out.println(results.get(i));
+                            int n = rand.nextInt(tricepExercises.size() - 1);
+                            JSONObject obj = tricepExercises.get(n);
+                            //if()
+                            //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                            if (usedInts.contains(n)) {
+                                i -= 1;
+                            } else {
+                                System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
+                                usedInts.add(n);
+                            }
+
+                            //System.out.println(obj.get("id"));
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("EXCEPTION!: " + e);
+                    }
+                    break;
+
+                case "ab":
+                    try {
+                        for (int i = 0; i < backMuscles.size(); i++) {
+                            JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + abMuscles.get(i)));
+
+                            JSONArray results = new JSONArray(parser.get("results").toString());
+                            //System.out.println(results);
+                            JSONObject currObject = new JSONObject();
+                            for (int j = 0; j < results.length(); j++) {
+
+                                currObject = (JSONObject) results.get(j);
+                                JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                if (muscleList.length() == 1) {
+                                    abExercises.add(currObject);
+                                }
+
+                            }
+
+                        }
+                        for (int i = 0; i < 4; i++) {
+                            //System.out.println(results.get(i));
+                            int n = rand.nextInt(abExercises.size() - 1);
+                            JSONObject obj = abExercises.get(n);
+                            //if()
+                            //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                            if (usedInts.contains(n)) {
+                                i -= 1;
+                            } else {
+                                System.out.println(obj.get("name"));
+                                selectedWorkouts.add(obj.get("name").toString());
                                 usedInts.add(n);
                             }
 
@@ -189,12 +419,346 @@ public class WorkoutActivity extends AppCompatActivity {
                 default:
 
             }
-            return null;
+
+
+            if(params[0].getMuscleGroup2() != null){
+                switch(params[0].getMuscleGroup2()){
+                    case "chest":
+                        try {
+                            for (int i = 0; i < chestMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + chestMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        chestExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(chestExercises.size() - 1);
+                                JSONObject obj = chestExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+
+
+                    case "back":
+                        try {
+                            for (int i = 0; i < backMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + backMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        backExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(backExercises.size() - 1);
+                                JSONObject obj = backExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+                    case "leg":
+                        try {
+                            for (int i = 0; i < backMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + legMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        legExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(legExercises.size() - 1);
+                                JSONObject obj = legExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+
+                    case "shoulder":
+                        try {
+                            for (int i = 0; i < shoulderMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + shoulderMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        shoulderExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(shoulderExercises.size() - 1);
+                                JSONObject obj = shoulderExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+
+                    case "bicep":
+                        try {
+                            for (int i = 0; i < bicepMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + bicepMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        bicepExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(bicepExercises.size() - 1);
+                                JSONObject obj = bicepExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+
+                    case "tricep":
+                        try {
+                            for (int i = 0; i < tricepMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + tricepMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        tricepExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(tricepExercises.size() - 1);
+                                JSONObject obj = tricepExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+
+                    case "ab":
+                        try {
+                            for (int i = 0; i < backMuscles.size(); i++) {
+                                JSONObject parser = new JSONObject(readUrl("http://wger.de/api/v2/exercise/?format=json&language=2&muscles=" + abMuscles.get(i)));
+
+                                JSONArray results = new JSONArray(parser.get("results").toString());
+                                //System.out.println(results);
+                                JSONObject currObject = new JSONObject();
+                                for (int j = 0; j < results.length(); j++) {
+
+                                    currObject = (JSONObject) results.get(j);
+                                    JSONArray muscleList = (JSONArray) currObject.get("muscles");
+
+                                    if (muscleList.length() == 1) {
+                                        abExercises.add(currObject);
+                                    }
+
+                                }
+
+                            }
+                            for (int i = 0; i < 4; i++) {
+                                //System.out.println(results.get(i));
+                                int n = rand.nextInt(abExercises.size() - 1);
+                                JSONObject obj = abExercises.get(n);
+                                //if()
+                                //JSONArray muscleList = new JSONArray(obj.get("muscles").toString());
+                                if (usedInts.contains(n)) {
+                                    i -= 1;
+                                } else {
+                                    System.out.println(obj.get("name"));
+                                    selectedWorkouts2.add(obj.get("name").toString());
+                                    usedInts.add(n);
+                                }
+
+                                //System.out.println(obj.get("id"));
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("EXCEPTION!: " + e);
+                        }
+                        break;
+                    default:
+
+                }
+            }
+
+            List<List<String>> returnValue = new ArrayList<>();
+            returnValue.add(selectedWorkouts);
+            if(params[0].getMuscleGroup2() != null){
+                returnValue.add(selectedWorkouts2);
+            }
+
+
+
+
+
+            return returnValue;
         }
 
         protected void onPreExecute() {
             Dialog.setMessage("Creating Workout..");
             Dialog.show();
+        }
+
+        protected void onPostExecute(List<List<String>> selectedWorkoutsIn){
+
+            if(getIntent().getExtras().size() == 2){
+                List<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
+                ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
+                lv1.setAdapter(arrayAdapter1);
+            }
+            if(getIntent().getExtras().size() == 3){
+                List<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
+                ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
+                lv1.setAdapter(arrayAdapter1);
+
+                List<String> workoutsToPopulateLV2 = selectedWorkoutsIn.get(1);
+                ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV2);
+                lv2.setAdapter(arrayAdapter2);
+            }
+
+
+            Dialog.hide();
+            //lv1.setAdapter(arrayAdapter1);
         }
 
     }
