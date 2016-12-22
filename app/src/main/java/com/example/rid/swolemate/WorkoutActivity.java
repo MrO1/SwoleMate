@@ -1,6 +1,8 @@
 package com.example.rid.swolemate;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -40,16 +42,18 @@ public class WorkoutActivity extends AppCompatActivity {
         if(getIntent().getExtras().size() == 2){
             lv1 = (ListView)findViewById(R.id.lv1);
             workout = new WorkoutTypeClass((String)extras.get("Workout1"),(String)extras.get("WorkoutType"));
+            workout.setSetsReps();
             System.out.println(workout.getWorkoutType());
         }else if (getIntent().getExtras().size() == 3){
             lv1 = (ListView)findViewById(R.id.lv1);
             lv2 = (ListView)findViewById(R.id.lv2);
             workout = new WorkoutTypeClass((String)extras.get("Workout1"), (String)extras.get("Workout2"),(String)extras.get("WorkoutType"));
+            workout.setSetsReps();
             System.out.println(workout.getWorkoutType());
         }
 
 
-        new CreateWorkout().execute(workout);
+        new CreateWorkout(this).execute(workout);
     }
 
     private static String readUrl(String urlString) throws Exception {
@@ -70,12 +74,17 @@ public class WorkoutActivity extends AppCompatActivity {
         }
     }
 
-    private class CreateWorkout extends AsyncTask<WorkoutTypeClass, Void, List<List<String>>> {
+    private class CreateWorkout extends AsyncTask<WorkoutTypeClass, Void, ArrayList<ArrayList<String>>> {
 
         private ProgressDialog Dialog = new ProgressDialog(WorkoutActivity.this);
 
+        Context activity;
+        public CreateWorkout(Activity a){
+            activity = a;
+        }
+
         @Override
-        protected List<List<String>> doInBackground(WorkoutTypeClass... params) {
+        protected ArrayList<ArrayList<String>> doInBackground(WorkoutTypeClass... params) {
             //Setup
             Random rand = new Random();
 
@@ -115,8 +124,8 @@ public class WorkoutActivity extends AppCompatActivity {
             ArrayList<Integer> usedInts = new ArrayList<Integer>();
 
 
-            List<String> selectedWorkouts = new ArrayList<String>();
-            List<String> selectedWorkouts2 = new ArrayList<String>();
+            ArrayList<String> selectedWorkouts = new ArrayList<String>();
+            ArrayList<String> selectedWorkouts2 = new ArrayList<String>();
 
 
 
@@ -721,7 +730,7 @@ public class WorkoutActivity extends AppCompatActivity {
                 }
             }
 
-            List<List<String>> returnValue = new ArrayList<>();
+            ArrayList<ArrayList<String>> returnValue = new ArrayList<>();
             returnValue.add(selectedWorkouts);
             if(params[0].getMuscleGroup2() != null){
                 returnValue.add(selectedWorkouts2);
@@ -739,21 +748,33 @@ public class WorkoutActivity extends AppCompatActivity {
             Dialog.show();
         }
 
-        protected void onPostExecute(List<List<String>> selectedWorkoutsIn){
+        protected void onPostExecute(ArrayList<ArrayList<String>> selectedWorkoutsIn){
 
             if(getIntent().getExtras().size() == 2){
-                List<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
-                ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
-                lv1.setAdapter(arrayAdapter1);
+                ArrayList<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
+                ListViewAdapter adapter = new ListViewAdapter((android.app.Activity)activity, workoutsToPopulateLV1, workout.getSets(), workout.getReps());
+                //ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
+
+                //lv1.setAdapter(arrayAdapter1);
+                lv1.setAdapter(adapter);
             }
             if(getIntent().getExtras().size() == 3){
-                List<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
-                ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
-                lv1.setAdapter(arrayAdapter1);
+                ArrayList<String> workoutsToPopulateLV1 = selectedWorkoutsIn.get(0);
 
-                List<String> workoutsToPopulateLV2 = selectedWorkoutsIn.get(1);
-                ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV2);
-                lv2.setAdapter(arrayAdapter2);
+                ListViewAdapter adapter = new ListViewAdapter((android.app.Activity)activity, workoutsToPopulateLV1, workout.getSets(), workout.getReps());
+
+
+
+
+               // ArrayAdapter<String> arrayAdapter1 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV1);
+                //lv1.setAdapter(arrayAdapter1);
+                lv1.setAdapter(adapter);
+
+                ArrayList<String> workoutsToPopulateLV2 = selectedWorkoutsIn.get(1);
+                ListViewAdapter adapter2 = new ListViewAdapter((android.app.Activity)activity, workoutsToPopulateLV2, workout.getSets(), workout.getReps());
+                //ArrayAdapter<String> arrayAdapter2 = new ArrayAdapter<String>(getApplicationContext(), R.layout.listview_item_custom, workoutsToPopulateLV2);
+                //lv2.setAdapter(arrayAdapter2);
+                lv2.setAdapter(adapter2);
             }
 
 
