@@ -10,54 +10,59 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.rid.swolemate.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/appLogo"
-        android:text="SWOLEMATE"
-        android:layout_centerHorizontal="true"
-        android:textSize="32dp"
-        android:layout_marginBottom="30dp"
-        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:src="@drawable/logo1"
+        android:id="@+id/logo"
+        android:layout_marginBottom="40dp"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appLogo"
+        android:layout_below="@+id/logo"
         android:id="@+id/muscleGroupsScrollView"
-        android:layout_marginBottom="32dp">
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/stroke_bg"
+        android:padding="5dp"
+        android:layout_centerHorizontal="true">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_margin="5dp">
 
             <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/chestButton"
                 android:textOff="Chest"
-                android:textOn="Chest"/>
+                android:textOn="Chest"
+                android:textSize="12sp"/>
 
             <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textOff="Back"
                 android:textOn="Back"
-                android:id="@+id/backButton"/>
+                android:id="@+id/backButton"
+                android:textSize="12sp"/>
 
             <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textOff="Shoulders"
                 android:textOn="Shoulders"
-                android:id="@+id/shouldersButton"/>
+                android:id="@+id/shouldersButton"
+                android:textSize="12sp"/>
 
             <ToggleButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textOff="Biceps"
                 android:textOn="Biceps"
+                android:textSize="12sp"
                 android:id="@+id/bicepsButton"/>
 
             <ToggleButton
@@ -65,6 +70,7 @@
                 android:layout_height="wrap_content"
                 android:textOff="Triceps"
                 android:textOn="Triceps"
+                android:textSize="12sp"
                 android:id="@+id/tricepsButton"/>
 
             <ToggleButton
@@ -72,10 +78,17 @@
                 android:layout_height="wrap_content"
                 android:textOff="Legs"
                 android:textOn="Legs"
+                android:textSize="12sp"
                 android:id="@+id/legsButton"/>
         </LinearLayout>
     </HorizontalScrollView>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+    </LinearLayout>
     <ToggleButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

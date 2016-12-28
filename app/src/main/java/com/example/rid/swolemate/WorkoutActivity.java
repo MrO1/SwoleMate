@@ -32,6 +32,8 @@ public class WorkoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
 
+        getSupportActionBar().hide();
+
         Bundle extras = getIntent().getExtras();
         System.out.println(extras.size());
 
